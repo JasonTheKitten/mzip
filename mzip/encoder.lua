@@ -68,6 +68,11 @@ local function getValues(f)
   return values
 end
 
-return function(s)
-  
-end
+return {
+  encode = function(s)
+    
+  end
+  getCharcode = function(s)
+    return getFreq(getChars(s))
+  end
+}
