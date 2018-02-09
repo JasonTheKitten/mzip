@@ -68,16 +68,27 @@ local function getValues(f)
   return values
 end
 
-local function getCharCode()
-  
+local function getCharCode(s)
+  return getValues(getFreq(getChars(s)))
 end
 
-local function encode()
-  
+local function encode(s)
+  local code = getCharCode(s)
+  local str = ""
+  for i=1, #s do
+    str = str..code[string.sub(s, i, i)]
+  end
+  local padding = #str % 8
+  str = str.."0":rep(padding)
+  local eS = ""
+  for i = 1, #str, 8 do
+    es = es .. string.sub(str, i, i+7)
+  end
+  return es
 end
 
 return {
   encode = encode,
   getCharcode = getCharCode,
-  
+  getChars = getChars
 }
