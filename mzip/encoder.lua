@@ -84,7 +84,7 @@ local function encode(s)
   for i = 1, #str, 8 do
     es = es .. string.format("%1x", string.sub(str, i, i+7))
   end
-  return es
+  return es, padding
 end
 
 return {
