@@ -51,21 +51,17 @@ end
 
 local function getValues(f)
   local values = {}
-  local code = ''
-  for k, v in ipairs(f) do
-    if string.sub(code, #code, #code) == "0" then
-      local choppedCode = string.sub(code, #code-1, #code-1)
-      if k == #f then
-        code = code.."1"
-      else
-        code = code.."0"
-      end
-      values[v] = code
+  local getTree
+  getTree = function(letters, tree)
+    local myTree
+    if not tree then
+      tree = {letters[#letters - 1], , letters[#letters]}
     else
-      code = code .. "0"
-      values[v] = code
+      
     end
+      
   end
+  local tree = getTree(f)
   return values
 end
 
