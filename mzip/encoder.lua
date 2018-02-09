@@ -82,7 +82,7 @@ local function encode(s)
   str = str.."0":rep(padding)
   local eS = ""
   for i = 1, #str, 8 do
-    es = es .. string.sub(str, i, i+7)
+    es = es .. string.format("%1x", string.sub(str, i, i+7))
   end
   return es
 end
