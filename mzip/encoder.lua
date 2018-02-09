@@ -1,3 +1,4 @@
+
 local function toITable(mytable)
   local tbl = {}
   local ids = {}
@@ -41,7 +42,7 @@ local function getFreq(tC)
   end
   groups = toITable(groups)
   for k, v in ipairs(groups) do
-    for k, v in ipairs(k) do
+    for k, v in ipairs(v) do
       table.insert(f, v)
     end
   end
@@ -78,10 +79,11 @@ local function encode(s)
   for i=1, #s do
     str = str..code[string.sub(s, i, i)]
   end
-  local padding = #str % 8
-  str = str.."0":rep(padding)
-  local eS = ""
+  local padding = 8-(#str % 8)
+  str = str..string.rep("0", padding)
+  local es = ""
   for i = 1, #str, 8 do
+  	print(string.char(tonumber(string.sub(str, i, i+7), 2)))
     es = es .. string.char(tonumber(string.sub(str, i, i+7), 2))
   end
   return es, padding
