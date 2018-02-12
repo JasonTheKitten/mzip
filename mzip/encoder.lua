@@ -34,7 +34,7 @@ local function getChars(s)
 end
 
 local function getFreq(tC)
-  local f = {}
+  local f = {chars=tC}
   local groups = {}
   for k, v in pairs(tC) do
     if not groups[v] then groups[v] = {} end
@@ -55,7 +55,9 @@ local function getValues(f)
   getTree = function(letters, tree)
     local myTree
     if not tree then
-      tree = {letters[#letters - 1], , letters[#letters]}
+      local part1, part2 = letters[#letters - 1], letters[#letters]
+      tree = {part1, part2, value = tC[part1]+tC[part2]}
+      
     else
       
     end
