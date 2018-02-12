@@ -56,16 +56,15 @@ local function getValues(f)
     local min, min2, posA, posB = {val = 0}
     for k, v in ipairs(values) do
       if v.freq<min.freq then
-        min2 = min
-        if min2 then posB = posA end
-        min = v
-        posA = k
+        min2, posB, min, posA = min, posA, v, k
       end
-      if min2 then break end
     end
-    
+    table.remove(values, posA)
+    table.remove(values, posB)
+    table.insert(values, {min, min2, freq = min.freq + min2.freq})
   end
-  return values[1]
+  local tree = values[1]
+  
 end
 
 local function getCharCode(s)
