@@ -42,8 +42,8 @@ local function getFreq(tC)
   end
   groups = toITable(groups)
   for k, v in ipairs(groups) do
-    for k, v in ipairs(v) do
-      table.insert(f, v)
+    for k, v2 in ipairs(v) do
+      table.insert(f, {letter = v, n = v})
     end
   end
   return f
@@ -52,18 +52,6 @@ end
 local function getValues(f)
   local values = {}
   local getTree
-  getTree = function(letters, tree)
-    local myTree
-    if not tree then
-      local part1, part2 = letters[#letters - 1], letters[#letters]
-      tree = {part1, part2, value = tC[part1]+tC[part2]}
-      
-    else
-      
-    end
-      
-  end
-  local tree = getTree(f)
   return values
 end
 
