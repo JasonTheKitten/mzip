@@ -43,7 +43,7 @@ local function getFreq(tC)
   groups = toITable(groups)
   for k, v in ipairs(groups) do
     for k, v2 in ipairs(v) do
-      table.insert(f, {letter = v, n = v})
+      table.insert(f, {letter = k, freq = v})
     end
   end
   return f
@@ -51,8 +51,22 @@ end
 
 local function getValues(f)
   local values = {}
-  local getTree
-  return values
+  while #values > 1 do
+    local i = 1
+    local min, min2 = {val = 0}
+    for k, v in ipairs(values) do
+      if v.freq<min.freq then
+        min2 = min
+        min = v
+      end
+      if min2 then break end
+    end
+    local posA, posB = 0, 0
+    for k, v in pairs(values) do
+      
+    end
+  end
+  return values[1]
 end
 
 local function getCharCode(s)
