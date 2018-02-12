@@ -1,4 +1,3 @@
-
 local function toITable(mytable)
   local tbl = {}
   local ids = {}
@@ -42,25 +41,27 @@ local function getFreq(tC)
   end
   groups = toITable(groups)
   for k, v in ipairs(groups) do
-    for k, v2 in ipairs(v) do
-      table.insert(f, {letter = k, freq = v})
+    for k2, v in ipairs(v) do
+      table.insert(f, {letter = k, freq = k})
     end
   end
   return f
 end
 
 local function getValues(f)
-  local values = {}
+  local values = f
   while #values > 1 do
     local i = 1
-    local min, min2, posA, posB = {val = 0}
+    local min, min2, posA, posB
     for k, v in ipairs(values) do
-      if v.freq<min.freq then
+      if (not min) then
+        min, posA = v, k
+      elseif v.freq<min.freq then
         min2, posB, min, posA = min, posA, v, k
-      end
-      if v.freq == min.freq then
+      elseif v.freq == min.freq then
         min2, posB = v, k
       end
+      print(min2)
     end
     table.remove(values, posA)
     table.remove(values, posB)
@@ -84,6 +85,7 @@ local function getValues(f)
     merge(branch[2])
     return rtn
   end
+  print(tree)
   local result = descend(tree)
   local rtn = {}
   for k, v in pairs(result) do
