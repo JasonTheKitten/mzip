@@ -61,7 +61,7 @@ local function getValues(f)
       elseif v.freq == min.freq then
         min2, posB = v, k
       end
-      print(min2)
+      print(posB)
     end
     table.remove(values, posA)
     table.remove(values, posB)
@@ -85,7 +85,6 @@ local function getValues(f)
     merge(branch[2])
     return rtn
   end
-  print(tree)
   local result = descend(tree)
   local rtn = {}
   for k, v in pairs(result) do
@@ -108,7 +107,6 @@ local function encode(s)
   str = str..string.rep("0", padding)
   local es = ""
   for i = 1, #str, 8 do
-    print(string.char(tonumber(string.sub(str, i, i+7), 2)))
     es = es .. string.char(tonumber(string.sub(str, i, i+7), 2))
   end
   return es, padding
