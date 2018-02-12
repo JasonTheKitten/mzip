@@ -53,18 +53,17 @@ local function getValues(f)
   local values = {}
   while #values > 1 do
     local i = 1
-    local min, min2 = {val = 0}
+    local min, min2, posA, posB = {val = 0}
     for k, v in ipairs(values) do
       if v.freq<min.freq then
         min2 = min
+        if min2 then posB = posA end
         min = v
+        posA = k
       end
       if min2 then break end
     end
-    local posA, posB = 0, 0
-    for k, v in pairs(values) do
-      
-    end
+    
   end
   return values[1]
 end
