@@ -33,7 +33,7 @@ local function getChars(s)
 end
 
 local function getFreq(tC)
-  local f = {chars=tC}
+  local f = {}
   local groups = {}
   for k, v in pairs(tC) do
     if not groups[v] then groups[v] = {} end
@@ -42,7 +42,7 @@ local function getFreq(tC)
   groups = toITable(groups)
   for k, v in ipairs(groups) do
     for k2, v in ipairs(v) do
-      table.insert(f, {letter = k, freq = k})
+      table.insert(f, {letter = v, freq = k})
     end
   end
   return f
@@ -56,15 +56,17 @@ local function getValues(f)
     for k, v in ipairs(values) do
       if (not min) then
         min, posA = v, k
+      elseif (not min2) then
+      	min2, posB = v, k
       elseif v.freq<min.freq then
         min2, posB, min, posA = min, posA, v, k
       elseif v.freq == min.freq then
         min2, posB = v, k
       end
-      print(posB)
     end
-    table.remove(values, posA)
-    table.remove(values, posB)
+    values[posA] = nil
+    values[posB] = nil
+    values = toITable(values)
     table.insert(values, {min, min2, freq = min.freq + min2.freq})
   end
   local tree = values[1]
@@ -81,8 +83,8 @@ local function getValues(f)
         end
       end
     end
-    merge(branch[1])
-    merge(branch[2])
+    merge("0", branch[1])
+    merge("1", branch[2])
     return rtn
   end
   local result = descend(tree)
