@@ -106,7 +106,7 @@ local function encode(s)
   str = str..string.rep("0", padding)
   local es = ""
   for i = 1, #str, 8 do
-  	print(string.char(tonumber(string.sub(str, i, i+7), 2)))
+    print(string.char(tonumber(string.sub(str, i, i+7), 2)))
     es = es .. string.char(tonumber(string.sub(str, i, i+7), 2))
   end
   return es, padding
