@@ -58,13 +58,33 @@ local function getValues(f)
       if v.freq<min.freq then
         min2, posB, min, posA = min, posA, v, k
       end
+      if v.freq == min.freq then
+        min2, posB = v, k
+      end
     end
     table.remove(values, posA)
     table.remove(values, posB)
     table.insert(values, {min, min2, freq = min.freq + min2.freq})
   end
   local tree = values[1]
-  
+  local descend
+  descend = function(branch)
+    local rtn = {}
+    local merge
+    merge = function(prefix, dat)
+      if dat.letter then
+        rtn[prefix] = dat.letter
+      else
+        for k, v in pairs(descend(dat)) do
+          rtn[prefix..k] = v
+        end
+      end
+    end
+    merge(branch[1])
+    merge(branch[2])
+    return rtn
+  end
+  return descend(tree)
 end
 
 local function getCharCode(s)
