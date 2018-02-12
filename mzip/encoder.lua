@@ -84,7 +84,12 @@ local function getValues(f)
     merge(branch[2])
     return rtn
   end
-  return descend(tree)
+  local result = descend(tree)
+  local rtn = {}
+  for k, v in pairs(result) do
+    rtn[v] = k
+  end
+  return rtn
 end
 
 local function getCharCode(s)
