@@ -1,4 +1,4 @@
-local encoder = loadfile("mzip/encode.lua")()
+local encoder = mzipload("encode.lua")()
 
 local function toBin(dec)
   local bits = (8) - 1
