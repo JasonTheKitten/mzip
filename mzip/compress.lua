@@ -28,10 +28,42 @@ local function compress(text)
   return mytext
 end
 
+local function split(str, symb)
+  local  words  =  {}
+  for word in string.gmatch(str, '[^"'..symb..'"]+')  do
+    table.insert(words,  word)
+  end
+  return words
+end
+
 local function fromFolder(folder)
-  
+  local loadFolder
+  loadFolder = function(folder)
+    local items = {}
+    for k, v in ipairs(fs.list(folder)) do
+      if fs.isDir(fs.combine(folder, v)) then
+        for k, v2 in ipairs(loadFolder(fs.combine(folder, v))) do
+          table.insert(items, fs.combine(v, v2))
+        end
+      else
+        table.insert(items, v)
+      end
+    end
+    return items
+  end
+  local dat = ""
+  for k, v in ipairs(loadFolder(folder)) do
+    dat = dat .. v .. "\n"
+    local file = io.open(fs.combine(folder, v), "r")
+    for line in file:lines() do
+      dat = dat.." "..line.."\n"
+    end
+    file:close()
+  end
+  return string.sub(dat, 1, #dat-1)
 end
 
 return {
-  compress = compress
+  compress = compress,
+  fromFolder = fromFolder
 }
