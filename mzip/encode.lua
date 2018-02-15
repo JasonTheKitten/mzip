@@ -135,3 +135,4 @@ return {
   getEncodingTree = getEncodingTree,
   getFreq = getFreq
 }
+
