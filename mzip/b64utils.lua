@@ -2,6 +2,7 @@ local b64s = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 local b64t = {}
 for i = 1, #b64s do
   b64t[i-1] = string.sub(b64s, i, i)
+  b64t[string.sub(b64s, i, i)] = i-1
 end
  
 return {encode = function(str)
@@ -45,15 +46,16 @@ return {encode = function(str)
 end, decode = function(str)
   local result = ""
   local action = 1
+  local function gChar(str, i)
+    return b64t[string.sub(str, i, i)]
+  end
   for i = 1, #str do
     if action == 1 then
-      result = result..string.char(bit.bor(bit.lshift(string.sub(str, i, i), 2), bit.rshift(string.sub(str, i+1, i+1), 4)))
+      result = result..string.char(bit.bor(bit.lshift(gChar(str, i), 2), bit.rshift(gChar(str, i+1), 4)))
     elseif action == 3 then
-      if #(string.sub(srt, i, i)) == 1 then  
-        result = result..string.char(bit.bor(bit.blshift(string.sub(str, i-1, i-1), 4), bit.brshift(string.sub(str, i, i),2)))
-      end
-    elseif action == 4 then
-      
+      result = result..string.char(bit.bor(bit.blshift(gChar(str, i-1), 4), bit.brshift(gChar(str, i),2)))
+    elseif action == 4 then  
+      result = result..string.char(bit.bor(bit.blshift(gChar(str, i-1), 6) % 192), gChar(str, i)))
     end
   end
   return result
