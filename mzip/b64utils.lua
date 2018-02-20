@@ -45,13 +45,13 @@ return {encode = function(str)
   return rtn
 end, decode = function(str)
   local result = ""
-  local action = 1
+  local action = 0
   local function gChar(str, i)
     return b64t[string.sub(str, i, i)]
   end
   for i = 1, #str do
     if not gChar(str, i) then break end
-    if action == 1 then
+    if action == 0 then
       result = result..string.char(
         bit.bor(
           bit.blshift(
@@ -60,7 +60,7 @@ end, decode = function(str)
           bit.brshift(
             gChar(str, i+1), 
           4)))
-    elseif action == 3 then
+    elseif action == 2 then
       result = result..string.char(
         bit.bor(
           bit.blshift(
@@ -69,14 +69,15 @@ end, decode = function(str)
           bit.brshift(
             gChar(str, i),
           2)))
-    elseif action == 4 then  
+    elseif action == 3 then  
       result = result..string.char(
         bit.bor(
           bit.blshift(
             gChar(str, i-1), 
-          6) % 192), 
+          6) % 192, 
           gChar(str, i)))
     end
+    action = (action+1)%4
   end
   return result
 end}
