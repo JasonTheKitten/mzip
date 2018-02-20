@@ -50,12 +50,32 @@ end, decode = function(str)
     return b64t[string.sub(str, i, i)]
   end
   for i = 1, #str do
+    if not gChar(str, i) then break end
     if action == 1 then
-      result = result..string.char(bit.bor(bit.lshift(gChar(str, i), 2), bit.rshift(gChar(str, i+1), 4)))
+      result = result..string.char(
+        bit.bor(
+          bit.blshift(
+            gChar(str, i), 
+          2), 
+          bit.brshift(
+            gChar(str, i+1), 
+          4)))
     elseif action == 3 then
-      result = result..string.char(bit.bor(bit.blshift(gChar(str, i-1), 4), bit.brshift(gChar(str, i),2)))
+      result = result..string.char(
+        bit.bor(
+          bit.blshift(
+            gChar(str, i-1), 
+          4), 
+          bit.brshift(
+            gChar(str, i),
+          2)))
     elseif action == 4 then  
-      result = result..string.char(bit.bor(bit.blshift(gChar(str, i-1), 6) % 192), gChar(str, i)))
+      result = result..string.char(
+        bit.bor(
+          bit.blshift(
+            gChar(str, i-1), 
+          6) % 192), 
+          gChar(str, i)))
     end
   end
   return result
