@@ -43,5 +43,18 @@ return {encode = function(str)
   end
   return rtn
 end, decode = function(str)
-
+  local result = ""
+  local action = 1
+  for i = 1, #str do
+    if action == 1 then
+      result = result..string.char(bit.bor(bit.lshift(string.sub(str, i, i), 2), bit.rshift(string.sub(str, i+1, i+1), 4)))
+    elseif action == 3 then
+      if #(string.sub(srt, i, i)) == 1 then  
+        result = result..string.char(bit.bor(bit.blshift(string.sub(str, i-1, i-1), 4), bit.brshift(string.sub(str, i, i),2)))
+      end
+    elseif action == 4 then
+      
+    end
+  end
+  return result
 end}
