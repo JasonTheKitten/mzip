@@ -1,13 +1,24 @@
 --local fromTree
 fromTree = function(tree)
-  local dat = {}
+  local dat = {"{"}
   local segs = {{tree = tree, pos = 1}}
-  while #segs > 0 do
+  while true do
     local myseg = segs[#segs]
     if myseg.tree[myseg.pos] then
       myseg.pos = myseg.pos+1
+      if myseg.tree[myseg.pos-1].letter then
+        dat[#dat+1] = myseg.tree[myseg.pos-1].letter
+      else
+        
+      end
     else
-      
+      table.remove(segs, #segs)
+      dat[#dat + 1] = "{"
+      if #segs > 0 then
+        segs[#segs].pos = pos+1
+      else
+        break
+      end
     end
   end
   
