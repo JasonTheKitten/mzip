@@ -9,7 +9,8 @@ fromTree = function(tree)
       if myseg.tree[myseg.pos-1].letter then
         dat[#dat+1] = myseg.tree[myseg.pos-1].letter
       else
-        
+        table.insert(dat, "{")
+        table.insert(segs, {tree = myseg.tree[myseg.pos-1], pos = 1})
       end
     else
       table.remove(segs, #segs)
