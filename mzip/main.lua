@@ -35,7 +35,7 @@ end
 local compress = mzipload("compress.lua")()
 local decompress = mzipload("decompress.lua")()
 
-if args[1] == "#run" then
+if args[1] == "#compress" then
   local compressed = compress.compress(compress.fromFolder())
   local handle = fs.open(args[2], "w")
   handle:write(compressed)
