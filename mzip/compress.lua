@@ -1,6 +1,17 @@
-local fromTree
+--local fromTree
 fromTree = function(tree)
-  local text = "{"
+  local dat = {}
+  local segs = {{tree = tree, pos = 1}}
+  while #segs > 0 do
+    local myseg = segs[#segs]
+    if myseg.tree[myseg.pos] then
+      myseg.pos = myseg.pos+1
+    else
+      
+    end
+  end
+  
+--[[  local text = "{"
   for k, v in ipairs(tree) do
     if v.letter then
       if (v.letter == "{") or (v.letter == "}") or (v.letter == "\\") then
@@ -11,7 +22,7 @@ fromTree = function(tree)
       text = text..fromTree(v)
     end
   end
-  return text.."}"
+  return text.."}"]]
 end
 
 local function compress(text)
