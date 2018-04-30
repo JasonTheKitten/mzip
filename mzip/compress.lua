@@ -23,7 +23,14 @@ fromTree = function(tree)
     end
     local compSegs = {}
     for k, v in pairs(dat) do
+      if v == "{" or v == "}" then
       
+      else
+        if type(compSegs[#compSegs]) == "number" then
+          
+        end
+        table.insert(compSegs, v)
+      end
     end
   end
   
