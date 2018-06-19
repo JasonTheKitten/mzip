@@ -16,7 +16,7 @@ fromTree = function(tree)
       table.remove(segs, #segs)
       dat[#dat + 1] = "}"
       if #segs > 0 then
-        segs[#segs].pos = pos+1
+        segs[#segs].pos = segs[#segs].pos+1
       else
         break
       end
