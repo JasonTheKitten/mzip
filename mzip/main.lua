@@ -4,6 +4,10 @@ if not args[1] then
   error("Please use correctly", -1)
 end
 
+local load = load or function(s, _, _2, env)
+	return loadstring(s, _, env)
+end
+
 local mzipload
 local cache = {}
 mzipload = function(file, env)
@@ -36,8 +40,8 @@ local compress = mzipload("compress.lua")()
 local decompress = mzipload("decompress.lua")()
 
 if args[1] == "#compress" then
-  local compressed = compress.compress(compress.fromFolder())
-  local handle = fs.open(args[2], "w")
+  local compressed = compress.compress(compress.fromFolder(args[2]))
+  local handle = fs.open(args[3], "w")
   handle:write(compressed)
   handle:close()
 elseif args[1] == "#extract" then
