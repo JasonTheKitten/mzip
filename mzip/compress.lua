@@ -56,6 +56,9 @@ local function fromSegs(segs)
       else
         processN(in, "{")
         in = 0
+        if tonumber(segs[1]) then
+          rtn = rtn .. "\\"
+        end
         rtn = rtn..segs[1]
       end
       table.remove(segs, 1)
