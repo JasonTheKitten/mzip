@@ -17,7 +17,7 @@ local function getTree(text)
       if char2 == "}" then
         tbl = tbl .. ","		
       end
-    elseif char == "\\"
+    elseif char == "\\" then
       local char2 = string.sub(text, 1, 1)
       text = string.sub(text, 2, #text)
       tbl = tbl.."letter = \""..char2.."\""
@@ -70,4 +70,3 @@ return {
   decompress=decompress,
   toFolder = toFolder
 }
-
