@@ -1,5 +1,3 @@
-
-
 local fromTree
 fromTree = function(tree)
   local dat = {"{"}
@@ -30,7 +28,7 @@ fromTree = function(tree)
       if v.letter then
         table.insert(segs, v.letter)
       else
-        for k, v in ipairs(getTree(v)) do
+        for k, v in ipairs(fromTree(v)) do
           table.insert(segs, v)
         end
       end
