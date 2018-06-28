@@ -1,3 +1,5 @@
+
+
 local fromTree
 fromTree = function(tree)
   local dat = {"{"}
@@ -21,6 +23,7 @@ fromTree = function(tree)
         break
       end
     end
+  end
     
     local segs = {"{"}
     for k, v in ipairs(tree) do
@@ -39,23 +42,23 @@ end
   
 local function fromSegs(segs)
     local rtn = ""
-    local in = 0
+    local int = 0
     local out = 0
     local function processN(n, c)
-      
+      rtn = rtn..string.rep(c, n)
     end
     while #rtn > 1 do
       if segs[1] == "{" then
-        in = in + 1
+        int = int + 1
         processN(out, "}")
         out = 0
       elseif segs[1] == "}" then
         out = out + 1
-        processN(in, "{")
-        in = 0
+        processN(int, "{")
+        int = 0
       else
-        processN(in, "{")
-        in = 0
+        processN(int, "{")
+        int = 0
         if tonumber(segs[1]) then
           rtn = rtn .. "\\"
         end
