@@ -35,30 +35,40 @@ fromTree = function(tree)
     table.insert(segs, "}")
     
     return segs
-  
---[[  local text = "{"
-  for k, v in ipairs(tree) do
-    if v.letter then
-      if (v.letter == "{") or (v.letter == "}") or (v.letter == "\\") then
-      	text=text.."\\"
-      end
-      text=text..v.letter
-    else
-      text = text..fromTree(v)
-    end
-  end
-  return text.."}"]]
 end
   
 local function fromSegs(segs)
-    
+    local rtn = ""
+    local in = 0
+    local out = 0
+    local function processN(n, c)
+      
+    end
+    while #rtn > 1 do
+      if segs[1] == "{" then
+        in = in + 1
+        processN(out, "}")
+        out = 0
+      elseif segs[1] == "}" then
+        out = out + 1
+        processN(in, "{")
+        in = 0
+      else
+        processN(in, "{")
+        in = 0
+        rtn = rtn..segs[1]
+      end
+      table.remove(segs, 1)
+    end
+    processN(out, "}")
+    return rtn
 end
 
 local function compress(text)
   local encode = loadfile("mzip/encode.lua", _G)()
   local es, pad = encode.encode(text)
   local tree = encode.getEncodingTree(encode.getFreq(encode.getChars(text)))
-  local compressed = pad..fromTree(tree)..es
+  local compressed = pad..fromSegs(fromTree(tree))..es
   local mytext
   if #compressed < #text then
     mytext = "c"..compressed
