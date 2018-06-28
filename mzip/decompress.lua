@@ -1,7 +1,9 @@
 local decode = mzipload("decode.lua", _G)()
 
 local function getTree(text)
-
+  while #text > 0 do
+    local char = string.sub(text, 1, 1)
+  end
 end
 local function decompress(text)
   if string.sub(text, 1, 1) == "u" then
