@@ -32,8 +32,8 @@ mzipload = function(file, env)
     local handle = http.get(url.."/"..file)
     local c = handle:readAll()
     handle:close()
-    textutils.pagedPrint(c)
-    cache[file] = load(c, "MZIP "..file, nil, env)
+    cache[file], e = load(c, "MZIP "..file, nil, env)
+    if e then error(e) end
   end
   return cache[file]
 end
