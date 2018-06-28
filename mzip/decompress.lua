@@ -1,39 +1,7 @@
 local decode = mzipload("decode.lua", _G)()
 
 local function getTree(text)
-  if not (string.match(text, "{.*}") and (string.sub(text, 1, 1)=="{")) then
-    error("Error", -1)
-  else
-    local treeLoadString = "{"
-	text = string.sub(text, 2, #text)
-	local parLevel = 1
-	while not (parLevel == 0) do
-	  local char = string.sub(text, 1, 1)
-	  text = string.sub(text, 2, #text)
-	  if char == "\\" then
-	    char = string.sub(text, 1, 1)
-	    text = string.sub(text, 2, #text)
-        if char=="\\" then
-          treeLoadString = treeLoadString.."{letter='\\"..char.."'},\n"
-        else
-            treeLoadString = treeLoadString.."{letter='"..char.."'},\n"
-        end
-	  elseif char == "{" then
-	    parLevel = parLevel+1
-		treeLoadString = treeLoadString.."{\n"
-	  elseif char == "}" then
-	    parLevel = parLevel-1
-	    treeLoadString = treeLoadString.."},\n"
-      elseif char == "'" then
-        treeLoadString = treeLoadString.."{letter=\"'\"},\n"
-	  elseif char == "\n" then
-        treeLoadString = treeLoadString.."{letter='\\n'},\n"
-      else
-	    treeLoadString = treeLoadString.."{letter='"..char.."'},\n"
-	  end
-    end
-	return load("return "..string.sub(treeLoadString, 1, #treeLoadString-2), "TreeLoader", nil, _ENV)(), text
-  end
+
 end
 local function decompress(text)
   if string.sub(text, 1, 1) == "u" then
