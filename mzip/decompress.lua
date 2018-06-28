@@ -1,39 +1,31 @@
 local decode = mzipload("decode.lua", _G)()
 
 local function getTree(text)
-  if not (string.match(text, "{.*}") and (string.sub(text, 1, 1)=="{")) then
-    error("Error", -1)
-  else
-    local treeLoadString = "{"
-	text = string.sub(text, 2, #text)
-	local parLevel = 1
-	while not (parLevel == 0) do
-	  local char = string.sub(text, 1, 1)
-	  text = string.sub(text, 2, #text)
-	  if char == "\\" then
-	    char = string.sub(text, 1, 1)
-	    text = string.sub(text, 2, #text)
-        if char=="\\" then
-          treeLoadString = treeLoadString.."{letter='\\"..char.."'},\n"
-        else
-            treeLoadString = treeLoadString.."{letter='"..char.."'},\n"
-        end
-	  elseif char == "{" then
-	    parLevel = parLevel+1
-		treeLoadString = treeLoadString.."{\n"
-	  elseif char == "}" then
-	    parLevel = parLevel-1
-	    treeLoadString = treeLoadString.."},\n"
-      elseif char == "'" then
-        treeLoadString = treeLoadString.."{letter=\"'\"},\n"
-	  elseif char == "\n" then
-        treeLoadString = treeLoadString.."{letter='\\n'},\n"
-      else
-	    treeLoadString = treeLoadString.."{letter='"..char.."'},\n"
-	  end
+  local tbl = ""
+  while #text > 0 do
+    local char = string.sub(text, 1, 1)
+    text = string.sub(text, 2, #text)
+    if tonumber(char) then
+      local times = char
+      while tonumber(string.sub(text, 1, 1)) do
+        times = times..string.sub(text, 1, 1)
+        text = string.sub(text, 2, #text)
+      end
+      times = tonumber(times)
+      local char2 = string.sub(text, 2, #text)
+      tbl = tbl..string.rep(char2, times)
+      if char2 == "}" then
+        tbl = tbl .. ","		
+      end
+    elseif char == "\\" then
+      local char2 = string.sub(text, 1, 1)
+      text = string.sub(text, 2, #text)
+      tbl = tbl.."letter = \""..char2.."\""
+    else
+      tbl = tbl.."letter = \""..char.."\""
     end
-	return load("return "..string.sub(treeLoadString, 1, #treeLoadString-2), "TreeLoader", nil, _ENV)(), text
   end
+  return textutils.serialize(tbl)
 end
 local function decompress(text)
   if string.sub(text, 1, 1) == "u" then
@@ -41,8 +33,8 @@ local function decompress(text)
   else
     local padding = tonumber(string.sub(text, 2, 2))
     text = string.sub(text, 3, #text)
-	local tree, text = getTree(text)
-	return decode.decode(text, tree, padding)
+    local tree, text = getTree(text)
+    return decode.decode(text, tree, padding)
   end
 end
 
@@ -78,4 +70,3 @@ return {
   decompress=decompress,
   toFolder = toFolder
 }
-

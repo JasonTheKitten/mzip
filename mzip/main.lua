@@ -4,6 +4,10 @@ if not args[1] then
   error("Please use correctly", -1)
 end
 
+local load = load or function(s, _, _2, env)
+	return loadstring(s, _, env)
+end
+
 local mzipload
 local cache = {}
 mzipload = function(file, env)
@@ -21,7 +25,8 @@ mzipload = function(file, env)
     local mfile = fs.open(fs.combine("mzip", file), "r")
     local c = mfile.readAll()
     mfile:close()
-    cache[file] = load(c, "MZIP "..file, nil, env)
+    cache[file], e = load(c, "MZIP "..file, nil, env)
+    if e then error(e) end
   else
     local handle = http.get(url.."/"..file)
     local c = handle:readAll()
@@ -32,17 +37,16 @@ mzipload = function(file, env)
   return cache[file]
 end
 
-local compress = mzipload("compress.lua")()
-local decompress = mzipload("decompress.lua")()
-
 if args[1] == "#compress" then
-  local compressed = compress.compress(compress.fromFolder())
-  local handle = fs.open(args[2], "w")
-  handle:write(compressed)
-  handle:close()
+  local compress = mzipload("compress.lua")()
+  local compressed = compress.compress(compress.fromFolder(args[2]))
+  local handle = fs.open(args[3], "w")
+  handle.write(compressed)
+  handle.close()
 elseif args[1] == "#extract" then
+  local decompress = mzipload("decompress.lua")()
   local handle = fs.open(args[2], "r")
   local result = handle:readAll()
-  handle:close()
+  handle.close()
   decompress.toFolder(decompress.decompress(result), args[3])
 end
