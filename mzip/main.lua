@@ -12,7 +12,8 @@ local mzipload
 local cache = {}
 mzipload = function(file, env)
   file = fs.combine('/', file)
-  env = env or _G
+  env = env or _ENV
+  env._G = env
   env.mzipload = mzipload
   if cache[file] then
     setfenv(cache[file], env)
