@@ -69,7 +69,7 @@ local function fromSegs(segs)
 end
 
 local function compress(text)
-  local encode = loadfile("mzip/encode.lua", _G)()
+  local encode = mzipload("encode.lua")()
   local es, pad = encode.encode(text)
   local tree = encode.getEncodingTree(encode.getFreq(encode.getChars(text)))
   local compressed = pad..fromSegs(fromTree(tree))..es
