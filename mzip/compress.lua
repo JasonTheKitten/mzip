@@ -1,4 +1,4 @@
---local fromTree
+local fromTree
 fromTree = function(tree)
   local dat = {"{"}
   local segs = {{tree = tree, pos = 1}}
@@ -21,18 +21,20 @@ fromTree = function(tree)
         break
       end
     end
-    local compSegs = {}
-    for k, v in pairs(dat) do
-      if v == "{" or v == "}" then
-      
+    
+    local segs = {"{"}
+    for k, v in ipairs(tree) do
+      if v.letter then
+        table.insert(segs, v.letter)
       else
-        if type(compSegs[#compSegs]) == "number" then
-          
+        for k, v in ipairs(getTree(v)) do
+          table.insert(segs, v)
         end
-        table.insert(compSegs, v)
       end
     end
-  end
+    table.insert(segs, "}")
+    
+    return segs
   
 --[[  local text = "{"
   for k, v in ipairs(tree) do
@@ -46,6 +48,10 @@ fromTree = function(tree)
     end
   end
   return text.."}"]]
+end
+  
+local function fromSegs(segs)
+    
 end
 
 local function compress(text)
