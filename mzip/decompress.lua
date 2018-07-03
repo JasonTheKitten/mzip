@@ -2,40 +2,81 @@ local decode = mzipload("decode.lua", _G)()
 
 local function getTree(text)
   local tbl = ""
-  while #text > 0 do
-    local char = string.sub(text, 1, 1)
-    text = string.sub(text, 2, #text)
-    if tonumber(char) then
-      local times = char
-      while tonumber(string.sub(text, 1, 1)) do
-        times = times..string.sub(text, 1, 1)
-        text = string.sub(text, 2, #text)
+  local inb = 0
+  local tblm = {}
+  local function getByte(text, b)
+    return string.char(tonumber(string.sub(text, (b-1)*8+1, b*8), 2))
+  end
+  repeat
+    char = getByte(text, 1)
+    text = string.sub(text, 9, #text)
+	if tonumber(char) then
+	  local times = char
+      while tonumber(getByte(text, 1)) do
+        times = times..getByte(text, 1)
+        text = string.sub(text, 9, #text)
       end
       times = tonumber(times)
-      local char2 = string.sub(text, 2, #text)
+	  local char2 = getByte(text, 1)
       tbl = tbl..string.rep(char2, times)
-      if char2 == "}" then
-        tbl = tbl .. ","		
-      end
-    elseif char == "\\" then
-      local char2 = string.sub(text, 1, 1)
-      text = string.sub(text, 2, #text)
-      tbl = tbl.."letter = \""..char2.."\""
-    else
-      tbl = tbl.."letter = \""..char.."\""
-    end
-  end
-  return textutils.serialize(tbl)
+	  text = string.sub(text, 9, #text)
+	  if char2 == "{" then
+	    for i = 1, times do
+	      table.insert(tblm, {})
+		end
+		inb = inb + times
+	  else
+	    for i = 1, times do
+		  inb = inb-1
+		  if #tblm == 1 then break end
+	      table.insert(tblm[#tblm-1], tblm[#tblm])
+		  table.remove(tblm, #tblm)
+		end
+	  end
+	elseif char == "{" then
+	  table.insert(tblm, {})
+	  inb = inb + 1
+	elseif char == "}" then
+	  inb = inb-1
+      if #tblm == 1 then break end
+      table.insert(tblm[#tblm-1], tblm[#tblm])
+      table.remove(tblm, #tblm)
+	elseif char == "\\" then
+	  local char2 = getByte(text, 1)
+      text = string.sub(text, 9, #text)
+	  table.insert(tblm[#tblm], {letter = char2})
+	else
+	  table.insert(tblm[#tblm], {letter = char})
+	end
+  until inb == 0
+  return tblm[1], text
 end
-local function decompress(text)
-  if string.sub(text, 1, 1) == "u" then
-    return string.sub(text, 2, #text)
-  else
-    local padding = tonumber(string.sub(text, 2, 2))
-    text = string.sub(text, 3, #text)
-    local tree, text = getTree(text)
-    return decode.decode(text, tree, padding)
+
+local function decompress(tbl)
+  local function toBin(dec)
+    local orgDec = dec
+    local bits = (8) - 1
+    local bin = ""
+    while bits >= 0 do
+      if 2^bits <= dec then
+        bin = bin.."1"
+        dec = dec-2^bits
+      else
+        bin = bin.."0"
+      end
+      bits = bits-1
+    end
+    return bin
   end
+  local padding = tonumber(string.char(tbl[1]))
+
+  table.remove(tbl, 1)
+  local text = ""
+  for k, v in ipairs(tbl) do
+    text = text..toBin(v)
+  end
+  local tree, text = getTree(text)
+  return decode.decode(text, tree, padding)
 end
 
 local function split(str, symb)
@@ -68,5 +109,6 @@ end
 
 return {
   decompress=decompress,
-  toFolder = toFolder
+  toFolder = toFolder,
+  getTree = getTree
 }

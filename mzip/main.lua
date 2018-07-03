@@ -41,13 +41,30 @@ end
 if args[1] == "#compress" then
   local compress = mzipload("compress.lua")()
   local compressed = compress.compress(compress.fromFolder(args[2]))
-  local handle = fs.open(args[3], "w")
-  handle.write(compressed)
+  local handle = fs.open(args[3], "wb")
+  for k, v in pairs(compressed) do
+    handle.write(v)
+  end
   handle.close()
 elseif args[1] == "#extract" then
   local decompress = mzipload("decompress.lua")()
-  local handle = fs.open(args[2], "r")
-  local result = handle:readAll()
+  local handle = fs.open(args[2], "rb")
+  local result = {}
+  local c = handle.read()
+  if c>127 then
+    c = handle.read()
+    while c do
+      table.insert(result, c)
+	  c = handle.read()
+    end
+	result = decompress.decompress(result)
+  else
+    result = ""
+    c = handle.read()
+    while c and c>-1 do
+      result = result..string.char(c)
+    end
+  end
   handle.close()
-  decompress.toFolder(decompress.decompress(result), args[3])
+  decompress.toFolder(result, args[3])
 end

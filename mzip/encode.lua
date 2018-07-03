@@ -1,4 +1,4 @@
-local function toITable(mytable)
+local function toITable(mytable) --This is based off of GetOpts toITable method
   local tbl = {}
   local ids = {}
   for k, v in pairs(mytable) do
@@ -112,19 +112,14 @@ end
 
 local function encode(s)
   local code = getCharCode(s)
-  local str = ""
+  local str, strb = "", {}
   for i=1, #s do
     str = str..code[string.sub(s, i, i)]
   end
-  local padding = 8-(#str % 8)
+  local padding = (8-(#str % 8))%8
   str = str..string.rep("0", padding)
-  local es = ""
-  for i = 1, #str, 8 do
-    es = es .. string.char(tonumber(string.sub(str, i, i+7), 2))
-  end
-  print("Original string bytes: ",#s)
-  print("New string bytes: ",#es)
-  return es, padding
+
+  return str, padding
 end
 
 return {
@@ -133,7 +128,8 @@ return {
   getChars = getChars,
   getValues = getValues,
   getEncodingTree = getEncodingTree,
-  getFreq = getFreq
+  getFreq = getFreq,
+  toITable = toITable
 }
 
 

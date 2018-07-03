@@ -26,7 +26,11 @@ fromTree = function(tree)
     local segs = {"{"}
     for k, v in ipairs(tree) do
       if v.letter then
-        table.insert(segs, v.letter)
+		if v.letter == "{" or v.letter == "}" or v.letter == "\\" then
+		  table.insert(segs, "\\"..v.letter)
+		else
+          table.insert(segs, v.letter)
+		end
       else
         for k, v in ipairs(fromTree(v)) do
           table.insert(segs, v)
@@ -43,9 +47,13 @@ local function fromSegs(segs)
     local int = 0
     local out = 0
     local function processN(n, c)
-      rtn = rtn..string.rep(c, n)
+	  if n>1 then
+        rtn = rtn..tostring(n)..c
+	  elseif n==1 then
+		rtn = rtn..c
+	  end
     end
-    while #rtn > 1 do
+    while #segs > 0 do
       if segs[1] == "{" then
         int = int + 1
         processN(out, "}")
@@ -55,6 +63,8 @@ local function fromSegs(segs)
         processN(int, "{")
         int = 0
       else
+	    processN(out, "}")
+        out = 0
         processN(int, "{")
         int = 0
         if tonumber(segs[1]) then
@@ -69,23 +79,39 @@ local function fromSegs(segs)
 end
 
 local function compress(text)
-  local encode = mzipload("encode.lua")()
-  local es, pad = encode.encode(text)
-  local tree = encode.getEncodingTree(encode.getFreq(encode.getChars(text)))
-  local compressed = pad..fromSegs(fromTree(tree))..es
-  local mytext
-  if #compressed < #text then
-    mytext = "c"..compressed
-  else
-    mytext = "u"..text
+  local encode, es = mzipload("encode.lua")(), {}
+  local es1, pad = encode.encode(text)
+  for i=1, #es1, 8 do
+    table.insert(es, tonumber(string.sub(es1, i, i+7), 2))
   end
-  return mytext
+  local tree = encode.getEncodingTree(encode.getFreq(encode.getChars(text)))
+  local compressed = {string.char(tonumber("10000000", 2)), string.byte(tostring(pad))}
+  local segs = fromSegs(fromTree(tree))
+  for i=1, #segs do
+	table.insert(compressed, string.sub(segs, i, i))
+  end
+  for k, v in ipairs(es) do
+	table.insert(compressed, v)
+  end
+  if #compressed < #text then
+    return compressed
+  else
+    local rtn = {0}
+	for i=1, #text do
+	  table.insert(rtn, string.byte(string.sub(text, i, i)))
+	end
+	return rtn
+  end
 end
 
 local function split(str, symb)
-  local  words  =  {}
-  for word in string.gmatch(str, '[^"'..symb..'"]+')  do
-    table.insert(words,  word)
+  local  words  =  {""}
+  for i=1, #str do
+    if string.sub(str, i, i) == symb then
+	  table.insert(words, "")
+	else
+	  words[#words] = words[#words]..string.sub(str, i, i)
+	end
   end
   return words
 end
@@ -119,5 +145,7 @@ end
 
 return {
   compress = compress,
-  fromFolder = fromFolder
+  fromFolder = fromFolder,
+  fromTree = fromTree,
+  fromSegs = fromSegs
 }
