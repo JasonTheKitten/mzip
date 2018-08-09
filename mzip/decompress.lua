@@ -10,44 +10,44 @@ local function getTree(text)
   repeat
     char = getByte(text, 1)
     text = string.sub(text, 9, #text)
-	if tonumber(char) then
-	  local times = char
+    if tonumber(char) then
+      local times = char
       while tonumber(getByte(text, 1)) do
         times = times..getByte(text, 1)
         text = string.sub(text, 9, #text)
       end
       times = tonumber(times)
-	  local char2 = getByte(text, 1)
+      local char2 = getByte(text, 1)
       tbl = tbl..string.rep(char2, times)
-	  text = string.sub(text, 9, #text)
-	  if char2 == "{" then
-	    for i = 1, times do
-	      table.insert(tblm, {})
-		end
-		inb = inb + times
-	  else
-	    for i = 1, times do
-		  inb = inb-1
-		  if #tblm == 1 then break end
-	      table.insert(tblm[#tblm-1], tblm[#tblm])
-		  table.remove(tblm, #tblm)
-		end
-	  end
-	elseif char == "{" then
-	  table.insert(tblm, {})
-	  inb = inb + 1
-	elseif char == "}" then
-	  inb = inb-1
+      text = string.sub(text, 9, #text)
+      if char2 == "{" then
+        for i = 1, times do
+          table.insert(tblm, {})
+        end
+        inb = inb + times
+      else
+        for i = 1, times do
+          inb = inb-1
+          if #tblm == 1 then break end
+          table.insert(tblm[#tblm-1], tblm[#tblm])
+          table.remove(tblm, #tblm)
+        end
+      end
+    elseif char == "{" then
+      table.insert(tblm, {})
+      inb = inb + 1
+    elseif char == "}" then
+      inb = inb-1
       if #tblm == 1 then break end
       table.insert(tblm[#tblm-1], tblm[#tblm])
       table.remove(tblm, #tblm)
-	elseif char == "\\" then
-	  local char2 = getByte(text, 1)
+    elseif char == "\\" then
+      local char2 = getByte(text, 1)
       text = string.sub(text, 9, #text)
-	  table.insert(tblm[#tblm], {letter = char2})
-	else
-	  table.insert(tblm[#tblm], {letter = char})
-	end
+      table.insert(tblm[#tblm], {letter = char2})
+    else
+      table.insert(tblm[#tblm], {letter = char})
+    end
   until inb == 0
   return tblm[1], text
 end
@@ -82,7 +82,7 @@ end
 local function split(str, symb)
   local  words  =  {}
   for word in string.gmatch(str, '[^'..symb..']+')  do
-	table.insert(words,  word)
+    table.insert(words,  word)
   end
   return words
 end
